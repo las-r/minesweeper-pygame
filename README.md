@@ -1,5 +1,6 @@
 # Minesweeper Pygame
 A Minesweeper game written in Python using the Pygame library.
+Hit `r` to reset or `i` to get info text.
 
 Both a Python and Windows executable file are available. The python file only supports Python 3 and Windows executable file only supports Windows 8 to 11.
 
