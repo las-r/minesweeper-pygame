@@ -7,7 +7,8 @@ import random
 
 # initialize
 pygame.init()
-font = pygame.font.Font(None, 64)
+RESULTFONT = pygame.font.Font(None, 64)
+INFOFONT = pygame.font.Font(None, 14)
 
 # settings
 BWIDTH, BHEIGHT = 9, 9 # board size
@@ -21,12 +22,17 @@ LOSETEXT = "You lose!" # lose text
 BG = (71, 77, 89)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)
 
 # variables
-playing = True
+playing = False
 win = False
 firstClick = True
 flagAmnt = 0
+info = True
+time = 0
+roundTime = 0
+lastEnd = 0
 
 # board
 board = [[0 for _ in range(BHEIGHT)] for _ in range(BWIDTH)] # mine board
@@ -191,6 +197,12 @@ running = True
 while running:
     screen.fill(BG)
 
+    # time
+    time = round(pygame.time.get_ticks() / 1000, 1)
+    
+    if playing:
+        roundTime = round(time - lastEnd, 1)
+
     # draw the board
     drawBoard()
 
@@ -206,11 +218,14 @@ while running:
             w = mouseX // TILESIZE
             h = mouseY // TILESIZE
 
-            if event.button == 1 and playing:  # left mb
+            if event.button == 1:  # left mb
                 if firstClick:
                     generateBoard(w, h)
                     firstClick = False
-                click(w, h)
+                    playing = True
+                    lastEnd = pygame.time.get_ticks() / 1000  # Start the round timer
+                if playing:
+                    click(w, h)
             elif event.button == 3 and playing:  # right mb
                 flag(w, h)
                 
@@ -221,18 +236,30 @@ while running:
                 board = [[0 for _ in range(BHEIGHT)] for _ in range(BWIDTH)]
                 revealed = [[False for _ in range(BHEIGHT)] for _ in range(BWIDTH)]
                 flags = [[False for _ in range(BHEIGHT)] for _ in range(BWIDTH)]
-                playing = True
+                playing = False
                 win = False
                 firstClick = True
                 flagAmnt = 0
+                time = 0
+                roundTime = 0
+                lastEnd = pygame.time.get_ticks() / 1000
+
+            if event.key == pygame.K_i:
+                # info
+                info = not info
+
+    # info text
+    if info:
+        text = INFOFONT.render(f"Flags left: {MINES - flagAmnt}; Session Timer: {time}; Round Timer: {roundTime};", True, WHITE)
+        screen.blit(text, (5, 5))
 
     # win lose text
-    if not playing:
+    if not playing and not firstClick:
         if win:
-            text = font.render(WINTEXT, True, GREEN)
+            text = RESULTFONT.render(WINTEXT, True, GREEN)
             screen.blit(text, text.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
         else:
-            text = font.render(LOSETEXT, True, RED)
+            text = RESULTFONT.render(LOSETEXT, True, RED)
             screen.blit(text, text.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
 
     # update the display
