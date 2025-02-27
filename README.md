@@ -5,6 +5,8 @@ Both a Python and Windows executable file are available. The python file only su
 
 Feel free to use, modify, and distribute this however you like! :)
 
+![image](https://github.com/user-attachments/assets/1c335293-99e8-45df-b0b7-2ab4477d5553)
+
 ## Compiling .py file to `.exe` or `.msi` file
 In case you want to, here's a quick tutorial on how you can build a Windows executable or installer from Python.
 
